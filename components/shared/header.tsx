@@ -2,20 +2,11 @@
 
 import { usePathname } from "next/navigation";
 
-// Mapeo de rutas a títulos de sección
 const pageTitles: Record<string, string> = {
-  "/dashboard":     "Dashboard",
-  "/catalogo":      "Catálogo de Productos",
-  "/stock":         "Stock",
-  "/ordenes":       "Órdenes de Importación",
-  "/proveedores":   "Proveedores",
-  "/reportes":      "Reportes",
-  "/configuracion": "Configuración",
+  "/dashboard": "Dashboard",
 };
 
-// Devuelve el título correspondiente al pathname actual
 function getPageTitle(pathname: string): string {
-  // Busca coincidencia exacta primero, luego por prefijo
   if (pageTitles[pathname]) return pageTitles[pathname];
   const match = Object.keys(pageTitles).find((key) => pathname.startsWith(key + "/"));
   return match ? pageTitles[match] : "Dashboard";
