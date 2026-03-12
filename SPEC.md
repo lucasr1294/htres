@@ -59,40 +59,64 @@ Venta realizada a un cliente.
 ## Módulos de la app
 
 ### Dashboard (página principal)
-- Resumen: stock total, valor del inventario, ventas del mes, órdenes activas
-- Alertas de stock bajo
-- Órdenes de importación en curso con estado
-- Últimas ventas
+**Propósito**: Morning briefing — en 30 segundos sabés si hay algo urgente.
+- 4 KPIs: valor del inventario, ventas del mes, órdenes activas, pagos pendientes
+- Alertas de stock bajo con acceso rápido a reponer
+- Órdenes en camino con estado y fecha estimada
+- Actividad reciente (últimas ventas)
+- Resumen financiero del mes (importado vs vendido)
+- Skill: `skills/dashboard.md`
+
+### Catálogo de Productos
+**Propósito**: Definir qué productos existen — separado del stock.
+- Vista tabla y vista grilla (cards con fotos)
+- Ficha de producto: info, precios, variantes, fotos, historial de importaciones
+- Cálculo de margen por producto con semáforo visual
+- Convención de SKUs: CAT-000 o CAT-000-VAR
+- Preparado para futura sincronización con Tienda Nube
+- Skill: `skills/catalogo.md`
 
 ### Stock
-- Tabla de productos con stock actual
-- Filtros por categoría, estado, nivel de stock
-- Vista de un producto: detalle completo + historial de movimientos
-- Registro manual de entrada/salida de stock
+**Propósito**: Inventario físico en tiempo real.
+- Tabla con disponible / reservado / en tránsito por producto
+- Alertas visuales cuando stock ≤ umbral
+- Historial de movimientos por producto
+- Registro manual de entradas/salidas
 - Exportar a Excel
+- Skill: `skills/stock.md`
 
-### Importaciones
-- Lista de órdenes con estado y tracking
-- Crear nueva orden (seleccionar proveedor + productos + cantidades)
-- Actualizar estado de una orden
-- Al marcar como "recibida": actualizar stock automáticamente
+### Órdenes de Importación
+**Propósito**: Reemplazar el caos de WhatsApp con proveedores.
+- Pipeline de órdenes con estados visuales
+- Crear orden: proveedor + productos + cantidades + costo USD
+- Timeline de cada orden (pedido → producción → tránsito → aduana → recibida)
+- Tracking number y documentos adjuntos
+- Al marcar RECIBIDA → stock se actualiza automáticamente
+- Sección de pagos por orden (anticipo + saldo)
+- Skills: `skills/importacion.md` + `skills/pagos.md`
 
 ### Proveedores
-- Lista de proveedores con rating y últimas órdenes
-- Ficha de proveedor con historial completo
-- Crear / editar proveedor
+**Propósito**: Rolodex inteligente de contactos en China.
+- Lista con nombre, ciudad, plataforma, rating
+- Ficha: contacto, tiempos promedio, historial de órdenes, productos comprados
+- Rating editable con notas internas
+- Acceso rápido: "Nueva orden a este proveedor"
+- Skill: `skills/proveedor.md`
 
 ### Reportes
-- Rotación de productos (qué se vende más)
-- Costo promedio de importación por categoría
+**Propósito**: Números reales para reuniones con socios y decisiones de negocio.
+- Ventas por canal (Instagram / Tienda Nube)
+- Rotación de productos (qué se vende rápido, qué acumula)
 - Margen bruto por producto
 - Stock valorizado
-- Exportar a PDF o Excel
+- Pagos a proveedores del período
+- Exportar a Excel o PDF
+- Skill: `skills/reportes.md`
 
 ### Configuración
 - Gestión de usuarios y roles
+- Tipo de cambio USD/ARS (actualización manual)
 - Categorías de productos
-- Tipos de cambio (USD/ARS) actualizables manualmente
 
 ---
 

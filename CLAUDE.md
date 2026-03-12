@@ -35,13 +35,48 @@ Una web app interna para gestionar un negocio de importación y venta de artícu
 └── STACK.md              ← decisiones tecnológicas
 ```
 
+## MCP Servers configurados
+
+El proyecto incluye un `.mcp.json` en la raíz con los servidores MCP activos. Claude Code los carga automáticamente al abrir el proyecto.
+
+| Server | Uso |
+|--------|-----|
+| **context7** | Documentación actualizada de librerías en tiempo real |
+
+### Cómo usar context7
+Agregar `use context7` al final de cualquier prompt cuando se trabaje con librerías externas:
+```
+Implementá paginación en la tabla de stock con TanStack Table. use context7
+Configurá Supabase Auth con middleware en Next.js 14. use context7
+Creá una migración de Prisma para agregar el modelo Venta. use context7
+```
+
+---
+
 ## Archivos de referencia disponibles
 - `SPEC.md` — qué hace la app, entidades del negocio, flujos principales
 - `STACK.md` — stack tecnológico y decisiones de arquitectura
-- `skills/stock.md` — cómo trabajar con stock
-- `skills/importacion.md` — cómo procesar órdenes de importación
-- `skills/reportes.md` — cómo generar reportes
-- `skills/proveedor.md` — cómo gestionar proveedores
+- `skills/frontend.md` — sistema de diseño completo: colores, tipografía, componentes, reglas visuales
+- `skills/dashboard.md` — KPIs, alertas, secciones y comportamiento del dashboard
+- `skills/catalogo.md` — entidad producto, variantes, SKUs, cálculo de margen
+- `skills/stock.md` — reglas de inventario, movimientos, UI de la tabla
+- `skills/importacion.md` — ciclo de vida de una orden, cálculo de costos, UI
+- `skills/pagos.md` — pagos por orden, anticipo/saldo, lógica financiera
+- `skills/proveedor.md` — ficha de proveedor, ciudades clave de China
+- `skills/reportes.md` — KPIs del dashboard, exportación, colores para gráficos
+
+### Cuándo leer cada skill
+| Tarea | Skill a leer primero |
+|-------|----------------------|
+| Cualquier componente visual | `skills/frontend.md` |
+| Tablas, cards, layouts | `skills/frontend.md` |
+| Dashboard y KPIs | `skills/dashboard.md` |
+| Catálogo / fichas de producto | `skills/catalogo.md` |
+| Lógica de inventario | `skills/stock.md` |
+| Órdenes a proveedores | `skills/importacion.md` |
+| Pagos y finanzas | `skills/pagos.md` |
+| Fichas de proveedor | `skills/proveedor.md` |
+| Dashboards y gráficos | `skills/reportes.md` + `skills/frontend.md` |
 
 ## Flujo de trabajo
 1. Leer `SPEC.md` para entender el dominio antes de construir algo nuevo

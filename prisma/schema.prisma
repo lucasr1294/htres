@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---- Modelos del negocio ----
+
+model Producto {
+  id          String   @id @default(cuid())
+  sku         String   @unique
+  nombre      String
+  descripcion String?
+  categoria   String
+  precioUSD   Decimal  @db.Decimal(10, 2)
+  precioARS   Decimal  @db.Decimal(12, 2)
+  activo      Boolean  @default(true)
+  creadoEn    DateTime @default(now())
+
+  stock      Stock?
+  variantes  Variante[]
+  itemsOrden ItemOrden[]
+}
+
+model Variante {
+  id         String   @id @default(cuid())
+  productoId String
+  nombre     String   // ej: "Color", "Tamaño"
+  valor      String   // ej: "Azul", "Grande"
+
+  producto   Producto @relation(fields: [productoId], references: [id])
+}
+
+model Stock {
+  id            String   @id @default(cuid())
+  productoId    String   @unique
+  disponible    Int      @default(0)
+  reservado     Int      @default(0)
+  enTransito    Int      @default(0)
+  umbralAlerta  Int      @default(5)
+  ubicacion     String?
+  actualizadoEn DateTime @updatedAt
+
+  producto    Producto          @relation(fields: [productoId], references: [id])
+  movimientos MovimientoStock[]
+}
+
+model MovimientoStock {
+  id         String          @id @default(cuid())
+  stockId    String
+  tipo       TipoMovimiento
+  cantidad   Int
+  motivo     String?
+  creadoEn   DateTime        @default(now())
+
+  stock      Stock           @relation(fields: [stockId], references: [id])
+}
+
+enum TipoMovimiento {
+  ENTRADA
+  SALIDA
+  AJUSTE
+  RESERVA
+  LIBERACION
+}
+
+model Proveedor {
+  id               String   @id @default(cuid())
+  nombre           String
+  ciudad           String?
+  contacto         String?
+  plataforma       String?  // Alibaba, 1688, directo
+  tiempoProduccion Int?     // días
+  tiempoEnvio      Int?     // días
+  rating           Int?     // 1-5
+  creadoEn         DateTime @default(now())
+
+  ordenes OrdenImportacion[]
+}
+
+model OrdenImportacion {
+  id            String      @id @default(cuid())
+  proveedorId   String
+  costoTotalUSD Decimal     @db.Decimal(10, 2)
+  estado        EstadoOrden @default(BORRADOR)
+  fechaPedido   DateTime
+  fechaEstimada DateTime?
+  tracking      String?
+  notas         String?
+  creadoEn      DateTime    @default(now())
+
+  proveedor Proveedor   @relation(fields: [proveedorId], references: [id])
+  items     ItemOrden[]
+}
+
+model ItemOrden {
+  id         String           @id @default(cuid())
+  ordenId    String
+  productoId String
+  cantidad   Int
+  precioUnit Decimal          @db.Decimal(10, 2)
+
+  orden    OrdenImportacion @relation(fields: [ordenId], references: [id])
+  producto Producto         @relation(fields: [productoId], references: [id])
+}
+
+enum EstadoOrden {
+  BORRADOR
+  CONFIRMADA
+  EN_PRODUCCION
+  EN_TRANSITO
+  EN_ADUANA
+  RECIBIDA
+  CANCELADA
+}
