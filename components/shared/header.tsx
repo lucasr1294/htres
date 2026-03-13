@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
+  "/catalogo":  "Catálogo de Productos",
 };
 
 function getPageTitle(pathname: string): string {

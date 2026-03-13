@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Layers, type LucideIcon } from "lucide-react";
 
 interface NavItem {
   label: string;
@@ -12,6 +12,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Catálogo",  href: "/catalogo",  icon: Layers },
 ];
 
 export function Sidebar() {

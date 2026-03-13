@@ -25,7 +25,7 @@ async function getDashboardData() {
       prisma.stock.findMany({
         include: {
           producto: {
-            select: { nombre: true, sku: true, precioUSD: true, activo: true },
+            select: { nombre: true, sku: true, precioFOBusd: true, activo: true },
           },
         },
         where: { producto: { activo: true } },
@@ -58,7 +58,7 @@ async function getDashboardData() {
 
     // --- Valor del inventario (disponible × costo USD) ---
     const valorInventario = stocks.reduce(
-      (acc, s) => acc + s.disponible * Number(s.producto.precioUSD),
+      (acc, s) => acc + s.disponible * Number(s.producto.precioFOBusd),
       0
     );
 
