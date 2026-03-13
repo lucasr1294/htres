@@ -7,19 +7,75 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ---- Enums ----
+
+enum Categoria {
+  ILUMINACION
+  DECORACION
+  MUEBLES
+  TEXTILES
+  ORGANIZACION
+  EXTERIOR
+  OTROS
+}
+
+enum TipoMovimiento {
+  ENTRADA
+  SALIDA
+  AJUSTE
+  RESERVA
+  LIBERACION
+}
+
+enum EstadoOrden {
+  BORRADOR
+  CONFIRMADA
+  EN_PRODUCCION
+  EN_TRANSITO
+  EN_ADUANA
+  RECIBIDA
+  CANCELADA
+}
+
+// ---- Modelos ----
+
+// Posición arancelaria: determina los impuestos de importación por tipo de producto
+model PosicionArancelaria {
+  id             String     @id @default(cuid())
+  codigo         String     @unique  // Ej: "9405.21.00.000M"
+  descripcion    String
+  derechos       Decimal    @db.Decimal(6, 4)  // 0.18 = 18%
+  tasa           Decimal    @db.Decimal(6, 4)  // tasa estadística, por defecto 0.03
+  iva            Decimal    @db.Decimal(6, 4)  // por defecto 0.21
+  ivaAdicional   Decimal    @db.Decimal(6, 4)  // por defecto 0.20
+  ganancias      Decimal    @db.Decimal(6, 4)  // por defecto 0.06
+  ingresosBrutos Decimal    @db.Decimal(6, 4)  // por defecto 0.025
+  creadoEn       DateTime   @default(now())
+
+  productos      Producto[]
+}
+
 model Producto {
-  id          String      @id @default(cuid())
-  sku         String      @unique
-  nombre      String
-  descripcion String?
-  categoria   String
-  precioUSD   Decimal     @db.Decimal(10, 2)
-  precioARS   Decimal     @db.Decimal(12, 2)
-  activo      Boolean     @default(true)
-  creadoEn    DateTime    @default(now())
-  itemsOrden  ItemOrden[]
-  stock       Stock?
-  variantes   Variante[]
+  id                    String               @id @default(cuid())
+  sku                   String               @unique
+  nombre                String
+  descripcion           String?
+  categoria             Categoria            @default(OTROS)
+  cantidad              Int                  @default(1)  // unidades del lote de compra
+  posicionArancelariaId String?
+  proveedorId           String?
+  precioFOBusd          Decimal              @db.Decimal(10, 2)  // precio proveedor sin aranceles
+  precioConArancelesUSD Decimal              @db.Decimal(10, 2)  // calculado automáticamente
+  precioVentaARS        Decimal              @db.Decimal(12, 2)
+  activo                Boolean              @default(true)
+  notas                 String?
+  creadoEn              DateTime             @default(now())
+
+  posicionArancelaria   PosicionArancelaria? @relation(fields: [posicionArancelariaId], references: [id])
+  proveedor             Proveedor?           @relation(fields: [proveedorId], references: [id])
+  stock                 Stock?
+  variantes             Variante[]
+  itemsOrden            ItemOrden[]
 }
 
 model Variante {
@@ -64,6 +120,7 @@ model Proveedor {
   rating           Int?
   creadoEn         DateTime           @default(now())
   ordenes          OrdenImportacion[]
+  productos        Producto[]
 }
 
 model OrdenImportacion {
@@ -88,22 +145,4 @@ model ItemOrden {
   precioUnit Decimal          @db.Decimal(10, 2)
   orden      OrdenImportacion @relation(fields: [ordenId], references: [id])
   producto   Producto         @relation(fields: [productoId], references: [id])
-}
-
-enum TipoMovimiento {
-  ENTRADA
-  SALIDA
-  AJUSTE
-  RESERVA
-  LIBERACION
-}
-
-enum EstadoOrden {
-  BORRADOR
-  CONFIRMADA
-  EN_PRODUCCION
-  EN_TRANSITO
-  EN_ADUANA
-  RECIBIDA
-  CANCELADA
 }
